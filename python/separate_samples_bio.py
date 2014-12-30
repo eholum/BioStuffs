@@ -1,3 +1,9 @@
+"""
+Script for parsing a fastq file into multiple files based on barcode ids.
+Low quality reads and non matching reads are parsed into their own files.
+"""
+
+# Left side barcodes
 lbc = {"AACCA":"V6L-0",
 "CCAAC":"V6L-1",
 "GGTTG":"V6L-2",
@@ -16,6 +22,7 @@ lbc = {"AACCA":"V6L-0",
 "TTTAA":"V6L-15",
 "GAGGT":"V6L-16"}
 
+# Right side barcodes
 rbc = {"TGGTT":"V6R-0",
 "GTTGG":"V6R-1",
 "CAACC":"V6R-2",
@@ -326,14 +333,14 @@ samples = {"V6L-0V6R-0":"TE.D0B1",
 
 files = {}
 
-filter_limit = 20
+filter_limit = 20 # Default tolerance set to 20
 
 import gc
 	
 def create_files(o):
 	for key in samples:
 		name = samples[key]
-		t = o + name + "_CBBS.fastq"
+		t = o + name + "_16S1.fastq"
 		files[name] = (t,[])
 		
 	files["NO_MATCH"] = (o + "NO_MATCH.fastq",[])
@@ -383,6 +390,7 @@ def separate(i):
 		
 		count += 1
 		
+		# Arbitrary... but seems to prevent memory overloads.
 		if count % 500000 == 0:
 			print "DUMPING FILES... "
 			dump_files()
@@ -425,7 +433,10 @@ def compute_phred_score(rec):
 	return low_score
 	
 def expand_maps():
-	
+	"""
+	Just add each primer string with a hamming distance of 1 to the barcode maps rather
+	than computing it for each line/string. Faster this way.
+	"""
 	for key in lbc.keys():
 		value = lbc[key]
 		
@@ -451,9 +462,10 @@ if __name__ == "__main__":
 	
 	import sys
 	
-	i = sys.argv[1]
-	o = sys.argv[2]
+	i = sys.argv[1] # Input file
+	o = sys.argv[2] # Output file
 
+    # Optional tolerance for phred score. Default is set to 20.
 	if (len(sys.argv) > 3):
 		filter_limit = int(sys.argv[3])
 
