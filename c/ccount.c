@@ -33,17 +33,18 @@ void report (char *file, count *ccount, count lcount, char *s)
 
 void counter(char *file, char *s) 
 {
-    char c;
+    unsigned int c;
     
     FILE *fp = fopen(file, "r");
     
     if (!fp) {
-        printf ("cannot open file '%s'", file);
+        printf ("cannot open file '%s'\n", file);
         return;
     }
     
     memset(ccount, 0L, 256);
-    while ((c = getc(fp)) != EOF) {
+    lcount = 0L;
+    while ((c = getc(fp)) != EOF ) {
         if (c == '\n') {
             lcount++; t_lcount++;
         }
@@ -58,7 +59,7 @@ int main(int argc, char **argv)
     int ch, i;
     
     if (argc < 3) {
-        printf ("usage: ccount CHARS FILE [FILE...]");
+        printf ("usage: ccount CHARS FILE [FILE...]\n");
         return -1;
     }
     
