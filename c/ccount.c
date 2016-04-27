@@ -28,7 +28,8 @@ void report (char *file, count *ccount, count lcount, char *s)
     printf("%6lu %s\n ", lcount, file);
 }
 
-void reset (count *ccount, char *s) {
+void reset (count *ccount, char *s) 
+{
     int i;
     memset(ccount, -1L, ASCII_SIZE);
     for (i = 0; *(s + i) != '\0'; i++) {
